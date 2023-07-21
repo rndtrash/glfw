@@ -66,7 +66,7 @@ EXECUTION_STATE GLFW_SetThreadExecutionState(EXECUTION_STATE esFlags)
 // Reference: https://github.com/metaxor/KernelEx/blob/31cdfc3560fc116637ee8ed7be31b12f3aacf5d1/apilibs/kexbases/Kernel32/module.c#L108
 //
 
-inline BOOL GLFW_GetModuleHandleExW(DWORD dwFlags, LPCWSTR lpModuleName, HMODULE *phModule)
+BOOL GLFW_GetModuleHandleExW(DWORD dwFlags, LPCWSTR lpModuleName, HMODULE *phModule)
 {
     WCHAR buf[MAX_PATH];
     if (!phModule)
