@@ -58,6 +58,90 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 
 #endif // _GLFW_USE_HYBRID_HPG
 
+#if WINVER < 0x0501 || _WIN32_WINNT < 0x0501
+
+// Polyfills for Windows versions below XP
+
+// GetModuleHandleExW polyfill
+// https://learn.microsoft.com/ru-ru/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandleexw
+// Reference: https://github.com/metaxor/KernelEx/blob/31cdfc3560fc116637ee8ed7be31b12f3aacf5d1/apilibs/kexbases/Kernel32/module.c#L108
+//
+
+#undef GetModuleHandleExW
+inline BOOL GetModuleHandleExW(DWORD dwFlags, LPCWSTR lpModuleName, HMODULE *phModule)
+{
+    WCHAR buf[MAX_PATH];
+    if (!phModule)
+    {
+        SetLastError(ERROR_INVALID_PARAMETER);
+        return FALSE;
+    }
+
+    *phModule = NULL;
+    if (dwFlags & GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS)
+    {
+        MEMORY_BASIC_INFORMATION mbi;
+        if (!VirtualQuery(lpModuleName, &mbi, sizeof(mbi)))
+            return FALSE;
+
+        *phModule = (HMODULE) mbi.AllocationBase;
+    }
+    else
+        *phModule = GetModuleHandleW(lpModuleName);
+
+    if (*phModule == NULL || !GetModuleFileNameW(*phModule, buf, MAX_PATH))
+    {
+        *phModule = NULL;
+        return FALSE;
+    }
+
+    if (!(dwFlags & GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT))
+        LoadLibraryW(buf);
+
+    return TRUE;
+}
+
+#if WINVER < 0x0500 || _WIN32_WINNT < 0x0500
+
+// Polyfills for Windows versions below 2000
+
+// VerSetConditionMask polyfill
+// https://learn.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-versetconditionmask
+// Reference: https://github.com/metaxor/KernelEx/blob/31cdfc3560fc116637ee8ed7be31b12f3aacf5d1/apilibs/kexbases/Kernel32/version.c#L383
+//
+
+#undef VerSetConditionMask
+inline ULONGLONG VerSetConditionMask(ULONGLONG ConditionMask, DWORD TypeMask, BYTE Condition)
+{
+    if (dwTypeBitMask == 0)
+        return dwlConditionMask;
+    dwConditionMask &= 0x07;
+    if (dwConditionMask == 0)
+        return dwlConditionMask;
+
+    if (dwTypeBitMask & VER_PRODUCT_TYPE)
+        dwlConditionMask |= dwConditionMask << 7*3;
+    else if (dwTypeBitMask & VER_SUITENAME)
+        dwlConditionMask |= dwConditionMask << 6*3;
+    else if (dwTypeBitMask & VER_SERVICEPACKMAJOR)
+        dwlConditionMask |= dwConditionMask << 5*3;
+    else if (dwTypeBitMask & VER_SERVICEPACKMINOR)
+        dwlConditionMask |= dwConditionMask << 4*3;
+    else if (dwTypeBitMask & VER_PLATFORMID)
+        dwlConditionMask |= dwConditionMask << 3*3;
+    else if (dwTypeBitMask & VER_BUILDNUMBER)
+        dwlConditionMask |= dwConditionMask << 2*3;
+    else if (dwTypeBitMask & VER_MAJORVERSION)
+        dwlConditionMask |= dwConditionMask << 1*3;
+    else if (dwTypeBitMask & VER_MINORVERSION)
+        dwlConditionMask |= dwConditionMask << 0*3;
+    return dwlConditionMask;
+}
+
+#endif
+
+#endif
+
 #if defined(_GLFW_BUILD_DLL)
 
 // GLFW DLL entry point

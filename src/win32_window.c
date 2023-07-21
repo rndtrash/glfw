@@ -37,6 +37,23 @@
 #include <windowsx.h>
 #include <shellapi.h>
 
+#if WINVER < 0x0501 || _WIN32_WINNT < 0x0501
+
+// Polyfills for Windows versions below XP
+
+// SetThreadExecutionState polyfill
+// https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setthreadexecutionstate
+//
+
+#undef SetThreadExecutionState
+inline EXECUTION_STATE SetThreadExecutionState(EXECUTION_STATE esFlags)
+{
+	// TODO: figure out how to prevent the screen from turning off on Windows 2000
+	return NULL;
+}
+
+#endif
+
 // Returns the window style for the specified window
 //
 static DWORD getWindowStyle(const _GLFWwindow* window)
