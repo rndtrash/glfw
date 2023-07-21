@@ -41,30 +41,14 @@
 
 // Polyfills for Windows versions below XP
 
-// Source: https://github.com/metaxor/KernelEx/blob/31cdfc3560fc116637ee8ed7be31b12f3aacf5d1/common/common.c#L60
-
-size_t lstrlenAnull(LPCSTR s)
-{
-    __try
-    {
-        LPCSTR ss = s;
-        while (*ss) ss++;
-        return ss - s + 1;
-    }
-    __except (EXCEPTION_EXECUTE_HANDLER)
-    {
-        return 0;
-    }
-}
-
-// Source: https://github.com/metaxor/KernelEx/blob/31cdfc3560fc116637ee8ed7be31b12f3aacf5d1/common/common.h#L143
+// Reference: https://github.com/metaxor/KernelEx/blob/31cdfc3560fc116637ee8ed7be31b12f3aacf5d1/common/common.h#L143
 
 #define STACK_AtoW(strA,strW) \
     { \
         strW = (LPWSTR)strA; \
         if (HIWORD(strA)) \
         { \
-            int c = lstrlenAnull((LPCSTR)strA); \
+            int c = lstrlenA((LPCSTR)strA); \
             if (c) \
             { \
                 strW = (LPWSTR)alloca(c*sizeof(WCHAR)); \

@@ -111,10 +111,11 @@ inline BOOL GLFW_GetModuleHandleExW(DWORD dwFlags, LPCWSTR lpModuleName, HMODULE
 //
 
 #define VerSetConditionMask GLFW_VerSetConditionMask
-inline ULONGLONG GLFW_VerSetConditionMask(ULONGLONG ConditionMask, DWORD TypeMask, BYTE Condition)
+inline ULONGLONG GLFW_VerSetConditionMask(ULONGLONG dwlConditionMask, DWORD dwTypeBitMask, BYTE dwConditionMask)
 {
     if (dwTypeBitMask == 0)
         return dwlConditionMask;
+
     dwConditionMask &= 0x07;
     if (dwConditionMask == 0)
         return dwlConditionMask;
