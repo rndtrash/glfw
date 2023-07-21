@@ -41,6 +41,22 @@
 
 // Polyfills for Windows versions below XP
 
+// Source: https://github.com/metaxor/KernelEx/blob/31cdfc3560fc116637ee8ed7be31b12f3aacf5d1/common/common.c#L60
+
+size_t lstrlenAnull(LPCSTR s)
+{
+    __try
+    {
+        LPCSTR ss = s;
+        while (*ss) ss++;
+        return ss - s + 1;
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        return 0;
+    }
+}
+
 // Source: https://github.com/metaxor/KernelEx/blob/31cdfc3560fc116637ee8ed7be31b12f3aacf5d1/common/common.h#L143
 
 #define STACK_AtoW(strA,strW) \
@@ -61,8 +77,8 @@
 // https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setthreadexecutionstate
 //
 
-#undef SetThreadExecutionState
-inline EXECUTION_STATE SetThreadExecutionState(EXECUTION_STATE esFlags)
+#define SetThreadExecutionState GLFW_SetThreadExecutionState
+inline EXECUTION_STATE GLFW_SetThreadExecutionState(EXECUTION_STATE esFlags)
 {
     // TODO: figure out how to prevent the screen from turning off on Windows 2000
     return NULL;
@@ -77,8 +93,8 @@ inline EXECUTION_STATE SetThreadExecutionState(EXECUTION_STATE esFlags)
 // Reference: https://github.com/metaxor/KernelEx/blob/31cdfc3560fc116637ee8ed7be31b12f3aacf5d1/apilibs/kexbasen/user32/uniuser32.c#L404
 //
 
-#undef GetMonitorInfoW
-inline BOOL GetMonitorInfoW(HMONITOR hMonitor, LPMONITORINFO lpmi)
+#define GetMonitorInfoW GLFW_GetMonitorInfoW
+inline BOOL GLFW_GetMonitorInfoW(HMONITOR hMonitor, LPMONITORINFO lpmi)
 {
     LPWSTR lpDevice = NULL;
     BOOL result;

@@ -67,8 +67,8 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 // Reference: https://github.com/metaxor/KernelEx/blob/31cdfc3560fc116637ee8ed7be31b12f3aacf5d1/apilibs/kexbases/Kernel32/module.c#L108
 //
 
-#undef GetModuleHandleExW
-inline BOOL GetModuleHandleExW(DWORD dwFlags, LPCWSTR lpModuleName, HMODULE *phModule)
+#define GetModuleHandleExW GLFW_GetModuleHandleExW
+inline BOOL GLFW_GetModuleHandleExW(DWORD dwFlags, LPCWSTR lpModuleName, HMODULE *phModule)
 {
     WCHAR buf[MAX_PATH];
     if (!phModule)
@@ -110,8 +110,8 @@ inline BOOL GetModuleHandleExW(DWORD dwFlags, LPCWSTR lpModuleName, HMODULE *phM
 // Reference: https://github.com/metaxor/KernelEx/blob/31cdfc3560fc116637ee8ed7be31b12f3aacf5d1/apilibs/kexbases/Kernel32/version.c#L383
 //
 
-#undef VerSetConditionMask
-inline ULONGLONG VerSetConditionMask(ULONGLONG ConditionMask, DWORD TypeMask, BYTE Condition)
+#define VerSetConditionMask GLFW_VerSetConditionMask
+inline ULONGLONG GLFW_VerSetConditionMask(ULONGLONG ConditionMask, DWORD TypeMask, BYTE Condition)
 {
     if (dwTypeBitMask == 0)
         return dwlConditionMask;
