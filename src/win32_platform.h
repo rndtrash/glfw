@@ -132,6 +132,30 @@ typedef struct
  #include <dwmapi.h>
 #endif /*Windows Vista*/
 
+#if WINVER < 0x0501 || _WIN32_WINNT < 0x0501
+
+// Polyfills for Windows versions below XP
+
+#define SetThreadExecutionState GLFW_SetThreadExecutionState
+EXECUTION_STATE GLFW_SetThreadExecutionState(EXECUTION_STATE esFlags);
+
+#define GetModuleHandleExW GLFW_GetModuleHandleExW
+BOOL GLFW_GetModuleHandleExW(DWORD dwFlags, LPCWSTR lpModuleName, HMODULE *phModule);
+
+#if WINVER < 0x0500 || _WIN32_WINNT < 0x0500
+
+// Polyfills for Windows versions below 2000
+
+#define GetMonitorInfoW GLFW_GetMonitorInfoW
+BOOL GLFW_GetMonitorInfoW(HMONITOR hMonitor, LPMONITORINFO lpmi);
+
+#define VerSetConditionMask GLFW_VerSetConditionMask
+ULONGLONG GLFW_VerSetConditionMask(ULONGLONG dwlConditionMask, DWORD dwTypeBitMask, BYTE dwConditionMask);
+
+#endif
+
+#endif
+
 #ifndef DPI_ENUMS_DECLARED
 typedef enum
 {
