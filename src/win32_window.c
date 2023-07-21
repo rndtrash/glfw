@@ -41,6 +41,22 @@
 
 // Polyfills for Windows versions below XP
 
+// Source: https://github.com/metaxor/KernelEx/blob/31cdfc3560fc116637ee8ed7be31b12f3aacf5d1/common/common.h#L143
+
+#define STACK_AtoW(strA,strW) \
+    { \
+        strW = (LPWSTR)strA; \
+        if (HIWORD(strA)) \
+        { \
+            int c = lstrlenAnull((LPCSTR)strA); \
+            if (c) \
+            { \
+                strW = (LPWSTR)alloca(c*sizeof(WCHAR)); \
+                MultiByteToWideChar(CP_ACP, 0, (LPCSTR)strA, -1, (LPWSTR)strW, c); \
+            } \
+        } \
+    }
+
 // SetThreadExecutionState polyfill
 // https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setthreadexecutionstate
 //
@@ -48,9 +64,53 @@
 #undef SetThreadExecutionState
 inline EXECUTION_STATE SetThreadExecutionState(EXECUTION_STATE esFlags)
 {
-	// TODO: figure out how to prevent the screen from turning off on Windows 2000
-	return NULL;
+    // TODO: figure out how to prevent the screen from turning off on Windows 2000
+    return NULL;
 }
+
+#if WINVER < 0x0500 || _WIN32_WINNT < 0x0500
+
+// Polyfills for Windows versions below 2000
+
+// GetMonitorInfoW polyfill
+// https://learn.microsoft.com/ru-ru/windows/win32/api/winuser/nf-winuser-getmonitorinfow
+// Reference: https://github.com/metaxor/KernelEx/blob/31cdfc3560fc116637ee8ed7be31b12f3aacf5d1/apilibs/kexbasen/user32/uniuser32.c#L404
+//
+
+#undef GetMonitorInfoW
+inline BOOL GetMonitorInfoW(HMONITOR hMonitor, LPMONITORINFO lpmi)
+{
+    LPWSTR lpDevice = NULL;
+    BOOL result;
+    MONITORINFOEX miex;
+
+    if (IsBadWritePtr(lpmi, sizeof(MONITORINFO)))
+        return FALSE;
+
+    if (lpmi->cbSize == sizeof(MONITORINFO))
+        return GetMonitorInfoA(hMonitor, lpmi);
+
+    if (lpmi->cbSize != sizeof(MONITORINFOEXW))
+    {
+        SetLastError(ERROR_INVALID_PARAMETER);
+        return FALSE;
+    }
+
+    miex.cbSize = sizeof(MONITORINFOEXA);
+
+    result = GetMonitorInfoA(hMonitor, &miex);
+
+    if(!result)
+        return FALSE;
+
+    STACK_AtoW(miex.szDevice, lpDevice);
+
+    return result;
+}
+
+#endif
+
+#undef STACK_AtoW
 
 #endif
 
