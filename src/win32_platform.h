@@ -142,6 +142,30 @@ EXECUTION_STATE GLFW_SetThreadExecutionState(EXECUTION_STATE esFlags);
 #define GetModuleHandleExW GLFW_GetModuleHandleExW
 BOOL GLFW_GetModuleHandleExW(DWORD dwFlags, LPCWSTR lpModuleName, HMODULE *phModule);
 
+#define GetLayeredWindowAttributes GLFW_GetLayeredWindowAttributes
+BOOL GLFW_GetLayeredWindowAttributes(HWND hwnd, COLORREF *pcrKey, BYTE *pbAlpha, DWORD *pdwFlags);
+
+#define SetLayeredWindowAttributes GLFW_SetLayeredWindowAttributes
+BOOL GLFW_SetLayeredWindowAttributes(HWND hwnd, COLORREF crKey, BYTE bAlpha, DWORD dwFlags);
+
+#define GetRawInputData GLFW_GetRawInputData
+UINT GLFW_GetRawInputData(HRAWINPUT hRawInput, UINT uiCommand, LPVOID pData, PUINT pcbSize, UINT cbSizeHeader);
+
+#define GetRawInputDeviceInfoA GLFW_GetRawInputDeviceInfoA
+UINT GLFW_GetRawInputDeviceInfoA(HANDLE hDevice, UINT uiCommand, LPVOID pData, PUINT pcbSize);
+
+#define GetRawInputDeviceList GLFW_GetRawInputDeviceList
+UINT GLFW_GetRawInputDeviceList(PRAWINPUTDEVICELIST pRawInputDeviceList, PUINT puiNumDevices, UINT cbSize);
+
+#define RegisterDeviceNotificationW GLFW_RegisterDeviceNotificationW
+HDEVNOTIFY GLFW_RegisterDeviceNotificationW(HANDLE hRecipient, LPVOID NotificationFilter, DWORD Flags);
+
+#define RegisterRawInputDevices GLFW_RegisterRawInputDevices
+BOOL GLFW_RegisterRawInputDevices(PCRAWINPUTDEVICE pRawInputDevices, UINT uiNumDevices, UINT cbSize);
+
+#define UnregisterDeviceNotification GLFW_UnregisterDeviceNotification
+BOOL GLFW_UnregisterDeviceNotification(HDEVNOTIFY Handle);
+
 #if WINVER < 0x0500 || _WIN32_WINNT < 0x0500
 
 // Polyfills for Windows versions below 2000
@@ -151,6 +175,18 @@ BOOL GLFW_GetMonitorInfoW(HMONITOR hMonitor, LPMONITORINFO lpmi);
 
 #define VerSetConditionMask GLFW_VerSetConditionMask
 ULONGLONG GLFW_VerSetConditionMask(ULONGLONG dwlConditionMask, DWORD dwTypeBitMask, BYTE dwConditionMask);
+
+#define EnumDisplayMonitors GLFW_EnumDisplayMonitors
+BOOL GLFW_EnumDisplayMonitors(HDC hdc, LPCRECT lprcClip, MONITORENUMPROC lpfnEnum, LPARAM dwData);
+
+#define EnumDisplaySettingsW GLFW_EnumDisplaySettingsW
+BOOL GLFW_EnumDisplaySettingsW(LPCWSTR  lpszDeviceName, DWORD iModeNum, DEVMODEW *lpDevMode);
+
+#define EnumDisplaySettingsExW GLFW_EnumDisplaySettingsExW
+BOOL GLFW_EnumDisplaySettingsExW(LPCWSTR lpszDeviceName, DWORD iModeNum, DEVMODEW *lpDevMode, DWORD dwFlags);
+
+#define MonitorFromWindow GLFW_MonitorFromWindow
+HMONITOR GLFW_MonitorFromWindow(HWND hwnd, DWORD dwFlags);
 
 #endif
 

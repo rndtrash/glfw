@@ -23,32 +23,8 @@
 
 BOOL GLFW_GetMonitorInfoW(HMONITOR hMonitor, LPMONITORINFO lpmi)
 {
-    LPWSTR lpDevice = NULL;
-    BOOL result;
-    MONITORINFOEX miex;
-
-    if (IsBadWritePtr(lpmi, sizeof(MONITORINFO)))
-        return FALSE;
-
-    if (lpmi->cbSize == sizeof(MONITORINFO))
-        return GetMonitorInfoA(hMonitor, lpmi);
-
-    if (lpmi->cbSize != sizeof(MONITORINFOEXW))
-    {
-        SetLastError(ERROR_INVALID_PARAMETER);
-        return FALSE;
-    }
-
-    miex.cbSize = sizeof(MONITORINFOEXA);
-
-    result = GetMonitorInfoA(hMonitor, &miex);
-
-    if(!result)
-        return FALSE;
-
-    STACK_AtoW(miex.szDevice, lpDevice);
-
-    return result;
+    // TODO: return the actual screen size
+    return FALSE;
 }
 
 // SetThreadExecutionState polyfill
@@ -130,4 +106,122 @@ inline ULONGLONG GLFW_VerSetConditionMask(ULONGLONG dwlConditionMask, DWORD dwTy
     else if (dwTypeBitMask & VER_MINORVERSION)
         dwlConditionMask |= dwConditionMask << 0*3;
     return dwlConditionMask;
+}
+
+// EnumDisplayMonitors polyfill
+// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaymonitors
+//
+
+BOOL GLFW_EnumDisplayMonitors(HDC hdc, LPCRECT lprcClip, MONITORENUMPROC lpfnEnum, LPARAM dwData)
+{
+    // TODO: call the callback at least once for one monitor
+    return FALSE;
+}
+
+// EnumDisplaySettingsExW polyfill
+// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaysettingsexw
+//
+
+BOOL GLFW_EnumDisplaySettingsExW(LPCWSTR lpszDeviceName, DWORD iModeNum, DEVMODEW *lpDevMode, DWORD dwFlags)
+{
+    // TODO:
+    return FALSE;
+}
+
+// EnumDisplaySettingsW polyfill
+// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumdisplaysettingsw
+//
+
+BOOL GLFW_EnumDisplaySettingsW(LPCWSTR  lpszDeviceName, DWORD iModeNum, DEVMODEW *lpDevMode)
+{
+    // TODO:
+    return FALSE;
+}
+
+// GetLayeredWindowAttributes polyfill
+// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getlayeredwindowattributes
+//
+
+BOOL GLFW_GetLayeredWindowAttributes(HWND hwnd, COLORREF *pcrKey, BYTE *pbAlpha, DWORD *pdwFlags)
+{
+    // TODO:
+    return FALSE;
+}
+
+// SetLayeredWindowAttributes polyfill
+// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setlayeredwindowattributes
+//
+
+BOOL GLFW_SetLayeredWindowAttributes(HWND hwnd, COLORREF crKey, BYTE bAlpha, DWORD dwFlags)
+{
+    // TODO:
+    return FALSE;
+}
+
+// GetRawInputData polyfill
+// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getrawinputdata
+//
+
+UINT GLFW_GetRawInputData(HRAWINPUT hRawInput, UINT uiCommand, LPVOID pData, PUINT pcbSize, UINT cbSizeHeader)
+{
+    // TODO:
+    return -1;
+}
+
+// GetRawInputDeviceInfoA polyfill
+// https://learn.microsoft.com/ru-ru/windows/win32/api/winuser/nf-winuser-getrawinputdeviceinfoa
+//
+
+UINT GLFW_GetRawInputDeviceInfoA(HANDLE hDevice, UINT uiCommand, LPVOID pData, PUINT pcbSize)
+{
+    // TODO:
+    return -1;
+}
+
+// GetRawInputDeviceList polyfill
+// https://learn.microsoft.com/ru-ru/windows/win32/api/winuser/nf-winuser-getrawinputdevicelist
+//
+
+UINT GLFW_GetRawInputDeviceList(PRAWINPUTDEVICELIST pRawInputDeviceList, PUINT puiNumDevices, UINT cbSize)
+{
+    // TODO:
+    return -1;
+}
+
+// MonitorFromWindow polyfill
+// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-monitorfromwindow
+//
+
+HMONITOR GLFW_MonitorFromWindow(HWND hwnd, DWORD dwFlags)
+{
+    // TODO:
+    return NULL;
+}
+
+// RegisterDeviceNotificationW polyfill
+// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerdevicenotificationw
+//
+
+HDEVNOTIFY GLFW_RegisterDeviceNotificationW(HANDLE hRecipient, LPVOID NotificationFilter, DWORD Flags)
+{
+    // TODO:
+    return NULL;
+}
+
+// RegisterRawInputDevices polyfill
+// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerrawinputdevices
+//
+
+BOOL GLFW_RegisterRawInputDevices(PCRAWINPUTDEVICE pRawInputDevices, UINT uiNumDevices, UINT cbSize)
+{
+    return FALSE;
+}
+
+// UnregisterDeviceNotification polyfill
+// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-unregisterdevicenotification
+//
+
+BOOL GLFW_UnregisterDeviceNotification(HDEVNOTIFY Handle)
+{
+    return FALSE;
 }
